@@ -1,0 +1,8 @@
+boto3
+jsonschema
+PyYAML
+requests
+packaging
+semver
+aenum
+deepdiff

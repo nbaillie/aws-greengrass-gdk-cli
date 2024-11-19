@@ -1,0 +1,13 @@
+{
+    "component": {
+        "1": {
+            "author": "abc",
+            "version": "1.0.0",
+            "build": {
+                "build_system": "default"
+            },
+            "publish": {}
+        }
+    },
+    "gdk_version": "1.0.0"
+}

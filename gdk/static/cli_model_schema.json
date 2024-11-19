@@ -1,0 +1,385 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "description": "This is gdk cli model where every key in this json model represents a command or sub-command of the cli tool.",
+    "properties": {
+        "gdk": {
+            "type": "object",
+            "description": "This is the name of the cli tool that is used as top-level parser of the cli.",
+            "required": [
+                "sub-commands",
+                "help"
+            ],
+            "properties": {
+                "sub-commands": {
+                    "required": [
+                        "component",
+                        "test-e2e",
+                        "config"
+                    ],
+                    "properties": {
+                        "component": {
+                            "$ref": "#/$defs/component"
+                        },
+                        "test-e2e": {
+                            "$ref": "#/$defs/test-e2e"
+                        },
+                        "config": {
+                            "$ref": "#/$defs/config"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            }
+        }
+    },
+    "required": [
+        "gdk"
+    ],
+    "additionalProperties": false,
+    "$defs": {
+        "help": {
+            "type": "string",
+            "description": "Description of the command which is displayed in the cli help message."
+        },
+        "argument": {
+            "type": "object",
+            "description": "Name of the argument.",
+            "required": [
+                "name",
+                "help"
+            ]
+        },
+        "conflicting_arg_groups": {
+            "type": "array",
+            "description": "Array of arrays where arguments of one array conflict with arguments of another array.",
+            "additionalItems": true,
+            "items": {
+                "type": "array",
+                "description": "Array of arguments that can go together with a command.",
+                "additionalItems": true,
+                "items": {
+                    "type": "string",
+                    "description": "Name of the argument."
+                }
+            }
+        },
+        "arg_groups": {
+            "type": "array",
+            "description": "Group the compatible arguments of a command in arrays to display them in a separate group in cli help.",
+            "additionalItems": true,
+            "items": {
+                "type": "object",
+                "description": "List of argument groups of a command.",
+                "required": [
+                    "title",
+                    "args",
+                    "description"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Short title that briefly explains the argument group.",
+                        "default": ""
+                    },
+                    "args": {
+                        "type": "array",
+                        "description": "List of arguments that are passed together with the cli command.",
+                        "additionalItems": true,
+                        "items": {
+                            "type": "string",
+                            "description": "Name of the argument."
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brief description of what the command with this argument group does."
+                    }
+                },
+                "additionalProperties": true
+            }
+        },
+        "component": {
+            "type": "object",
+            "description": "A command of gdk cli tool. This is one of the sub parsers under the top-level parser ('gdk') of the cli.",
+            "properties": {
+                "sub-commands": {
+                    "required": [
+                        "init",
+                        "build",
+                        "publish",
+                        "list"
+                    ],
+                    "properties": {
+                        "init": {
+                            "$ref": "#/$defs/init"
+                        },
+                        "build": {
+                            "$ref": "#/$defs/build"
+                        },
+                        "publish": {
+                            "$ref": "#/$defs/publish"
+                        },
+                        "list": {
+                            "$ref": "#/$defs/list"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "list": {
+            "type": "object",
+            "description": "Sub command under 'component' command. This is one of the sub-parsers under 'component' parser.",
+            "required": [
+                "help",
+                "arguments"
+            ],
+            "properties": {
+                "arguments": {
+                    "description": "List of all the arguments that can be passed with the list command.",
+                    "required": [
+                        "template",
+                        "repository"
+                    ],
+                    "properties": {
+                        "template": {
+                            "$ref": "#/$defs/argument"
+                        },
+                        "repository": {
+                            "$ref": "#/$defs/argument"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                },
+                "conflicting_arg_groups": {
+                    "$ref": "#/$defs/conflicting_arg_groups"
+                }
+            },
+            "additionalProperties": false
+        },
+        "publish": {
+            "type": "object",
+            "description": "Sub command under 'component' command. This is one of the sub-parsers under 'component' parser.",
+            "required": [
+                "help",
+                "arguments"
+            ],
+            "properties": {
+                "help": {
+                    "$ref": "#/$defs/help"
+                },
+                "arguments": {
+                    "description": "List of all the arguments that can be passed with the publish command.",
+                    "required": [
+                        "bucket"
+                    ],
+                    "properties": {
+                        "bucket": {
+                            "$ref": "#/$defs/argument"
+                        }
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "init": {
+            "type": "object",
+            "description": "Sub command under 'component' command. This is one of the sub-parsers under 'component' parser.",
+            "required": [
+                "arguments",
+                "conflicting_arg_groups",
+                "arg_groups",
+                "help"
+            ],
+            "properties": {
+                "arguments": {
+                    "description": "List of all the arguments that can be passed with the init command.",
+                    "required": [
+                        "language",
+                        "repository",
+                        "template",
+                        "name"
+                    ],
+                    "properties": {
+                        "language": {
+                            "$ref": "#/$defs/argument"
+                        },
+                        "repository": {
+                            "$ref": "#/$defs/argument"
+                        },
+                        "template": {
+                            "$ref": "#/$defs/argument"
+                        },
+                        "name": {
+                            "$ref": "#/$defs/argument"
+                        }
+                    }
+                },
+                "conflicting_arg_groups": {
+                    "$ref": "#/$defs/conflicting_arg_groups"
+                },
+                "arg_groups": {
+                    "$ref": "#/$defs/arg_groups"
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "build": {
+            "type": "object",
+            "description": "Sub command under 'component' command. This is one of the sub-parsers under 'component' parser.",
+            "required": [
+                "help"
+            ],
+            "properties": {
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "test-e2e": {
+            "type": "object",
+            "description": "A command of gdk cli tool. This is one of the sub parsers under the top-level parser ('gdk') of the cli.",
+            "properties": {
+                "sub-commands": {
+                    "required": [
+                        "init",
+                        "run"
+                    ],
+                    "properties": {
+                        "init": {
+                            "$ref": "#/$defs/test-e2e-init"
+                        },
+                        "run": {
+                            "$ref": "#/$defs/test-e2e-run"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "test-e2e-init": {
+            "type": "object",
+            "description": "Sub command under 'test' command. This is one of the sub-parsers under 'test' parser.",
+            "required": [
+                "help"
+            ],
+            "properties": {
+                "arguments": {
+                    "description": "List of all the arguments that can be passed with the test-e2e init command.",
+                    "anyOf": [
+                        {
+                            "required": ["otf_version"]
+                        },
+                        {
+                            "required": ["gtf_version"]
+                        }
+                    ],
+                    "properties": {
+                        "otf_version": {
+                            "$ref": "#/$defs/argument"
+                        },
+                        "gtf_version": {
+                            "$ref": "#/$defs/argument"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "test-e2e-run": {
+            "type": "object",
+            "description": "Sub command under 'test' command. This is one of the sub-parsers under 'test' parser.",
+            "required": [
+                "help"
+            ],
+            "properties": {
+                "arguments": {
+                    "description": "List of all the arguments that can be passed with the test-e2e run command.",
+                    "anyOf": [
+                        {
+                            "required": ["otf_options"]
+                        },
+                        {
+                            "required": ["gtf_options"]
+                        }
+                    ],
+                    "properties": {
+                        "otf_options": {
+                            "$ref": "#/$defs/argument"
+                        },
+                        "gtf_options": {
+                            "$ref": "#/$defs/argument"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "config": {
+            "type": "object",
+            "description": "A command of gdk cli tool. This is one of the sub parsers under the top-level parser ('gdk') of the cli.",
+            "properties": {
+                "sub-commands": {
+                    "required": [
+                        "update"
+                    ],
+                    "properties": {
+                        "update": {
+                            "$ref": "#/$defs/update"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        },
+        "update": {
+            "type": "object",
+            "description": "Sub command under 'config' command. This is one of the sub-parsers under 'config' parser.",
+            "required": [
+                "help"
+            ],
+            "properties": {
+                "arguments": {
+                    "description": "List of all the arguments that can be passed with the config update command.",
+                    "required": [
+                        "component"
+                    ],
+                    "properties": {
+                        "component": {
+                            "$ref": "#/$defs/argument"
+                        }
+                    }
+                },
+                "help": {
+                    "$ref": "#/$defs/help"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

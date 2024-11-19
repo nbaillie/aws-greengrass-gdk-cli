@@ -1,0 +1,18 @@
+# development dependencies
+pre-commit
+flake8
+# test dependencies
+py
+jsonschema
+requests
+pyyaml
+boto3
+pytest
+mock
+coverage
+pytest-mock
+behave
+behave-html-formatter
+Faker
+semver
+aenum
