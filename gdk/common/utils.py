@@ -1,3 +1,5 @@
+import hashlib
+import base64
 import logging
 import shutil
 from pathlib import Path
@@ -154,6 +156,16 @@ def is_recipe_size_valid(file_path):
 
 def convertToLowercase(value):
     return str.lower(value)
+
+
+def artifact_encoded_hash(file_path):
+    with open(file_path, "rb") as f:
+        file_hash = hashlib.sha256()
+        chunk = f.read(4096)
+        while chunk:
+            file_hash.update(chunk)
+            chunk = f.read(4096)
+    return base64.b64encode(file_hash.digest()).decode("utf-8")
 
 
 error_line = "\n=============================== ERROR ===============================\n"

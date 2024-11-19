@@ -140,6 +140,15 @@ class ConfigChecker:
         if not isinstance(_file_upload_args, dict):
             return False
 
+        _only_on_change = input_object.get("only_on_change", [])
+        if not isinstance(_only_on_change, list):
+            return False
+        for item in _only_on_change:
+            if not isinstance(item, str):
+                return False
+            elif item not in ["ARTIFACTS", "GDK_CONFIG", "RECIPE"]:
+                return False
+
         return True
 
     def is_valid_gdk_version(self, input_value):

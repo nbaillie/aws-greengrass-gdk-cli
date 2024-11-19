@@ -17,6 +17,7 @@ class ComponentPublishConfiguration(GDKProject):
         self.options = self._get_options()
         self.account_num = self.get_account_number()
         self.region = self._get_region()
+        self.latest_published_component_version = self.get_latest_published_component_version(self.region)
         self.bucket = self._get_bucket(self.region, self.account_num)
         self.component_version = self.get_component_version(self.region)
         self.publisher = self.component_config.get("author", "")
@@ -37,15 +38,19 @@ class ComponentPublishConfiguration(GDKProject):
     def _validated_region(self, region):
         if region == "":
             raise ValueError("Region cannot be empty. Please provide a valid region.")
+        return region
+
+    def _check_for_latest_published_component_version(self, region):
         component_arn = self._get_component_arn(region)
+        version = None
         try:
-            Greengrassv2Client(region).get_component_version(component_arn)
+            version = Greengrassv2Client(region).get_highest_cloud_component_version(component_arn)
         except exceptions.EndpointConnectionError:
             raise ValueError("Greengrass does not exist in %s region. Please provide a valid region.", region)
         except Exception as e:
             logging.error("Error occurred while checking Greengrass availability: %s", e)
             raise e
-        return region
+        return version
 
     def _get_bucket(self, _region, _account):
         _bucket = ""
@@ -89,6 +94,24 @@ class ComponentPublishConfiguration(GDKProject):
         with open(_opts_path.resolve(), "r", encoding="utf-8") as file:
             return json.loads(file.read())
 
+    def get_latest_published_component_version(self, _region, ) -> str:
+        logging.debug("Fetching private components from the account.")
+        try:
+            c_name = self.component_name
+            c_latest_current_version = self._check_for_latest_published_component_version(_region)
+            if not c_latest_current_version:
+                logging.info(
+                    "No private version of the component '%s' exist in the account.", c_name
+                )
+
+                return None
+            logging.debug("Found latest version '%s' of the component '%s' in the account.", c_latest_current_version, c_name)
+
+            return c_latest_current_version
+        except Exception:
+            logging.error("Failed to calculate the latest published version of the component.")
+            raise
+
     def get_component_version(self, _region):
         _version = self.component_config.get("version")
         if not _version:
@@ -110,12 +133,10 @@ class ComponentPublishConfiguration(GDKProject):
         the fallback version.
         """
         fallback_version = "1.0.0"
-        logging.debug("Fetching private components from the account.")
         try:
             c_name = self.component_name
-            component_arn = self._get_component_arn(_region)
-            c_next_patch_version = Greengrassv2Client(_region).get_highest_cloud_component_version(component_arn)
-            if not c_next_patch_version:
+            c_latest_published_version = self.latest_published_component_version
+            if not c_latest_published_version:
                 logging.info(
                     "No private version of the component '%s' exist in the account. Using '%s' as the next version to create.",
                     c_name,
@@ -123,9 +144,9 @@ class ComponentPublishConfiguration(GDKProject):
                 )
 
                 return fallback_version
-            logging.debug("Found latest version '%s' of the component '%s' in the account.", c_next_patch_version, c_name)
+            logging.debug("Found latest version '%s' of the component '%s' in account.", c_latest_published_version, c_name)
 
-            next_version = utils.get_next_patch_version(c_next_patch_version)
+            next_version = utils.get_next_patch_version(c_latest_published_version)
             logging.info("Using '%s' as the next version of the component '%s' to create.", next_version, c_name)
             return next_version
         except Exception:

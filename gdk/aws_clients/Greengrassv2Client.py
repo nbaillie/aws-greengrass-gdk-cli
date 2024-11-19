@@ -30,6 +30,10 @@ class Greengrassv2Client:
         comp_list_response = self.client.list_component_versions(arn=component_arn)
         return comp_list_response["componentVersions"]
 
+    def get_component(self, component_arn) -> dict:
+        comp_response = self.client.get_component(recipeOutputFormat='YAML', arn=component_arn)
+        return comp_response["recipe"]
+
     def create_gg_component(self, file_path) -> None:
         """
         Creates a GreengrassV2 private component version using its recipe.
@@ -38,12 +42,7 @@ class Greengrassv2Client:
         """
         with open(file_path, "r", encoding="utf-8") as f:
             try:
-                response = self.client.create_component_version(inlineRecipe=f.read())
-                logging.info(
-                    "Created private version '%s' of the component '%s' in the account.",
-                    response.get("componentVersion"),
-                    response.get("componentName"),
-                )
+                self.client.create_component_version(inlineRecipe=f.read())
             except Exception:
                 logging.error("Failed to create a private version of the component using the recipe at '%s'.", file_path)
                 raise

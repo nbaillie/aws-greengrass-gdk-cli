@@ -201,6 +201,8 @@ def test_check_region_invalid(invalid_region):
         '{"file_upload_args": {}}',
         "{}",
         '{"ok": "bar"}',
+        '{"only_on_change": ["ARTIFACTS", "RECIPE"]}',
+        '{"file_upload_args": {"bucket": "bucket1"},"only_on_change": ["ARTIFACTS"]}',
     ],
 )
 def test_check_publish_options_valid(valid_publish_options):

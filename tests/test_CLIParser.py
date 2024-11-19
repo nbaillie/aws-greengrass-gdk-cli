@@ -12,7 +12,7 @@ def test_CLIParser_initiation_top_level():
     # If CLIParser is initiated with the cli tool name, it has no top-level parser.
     parser = cli_parser.CLIParser(consts.cli_tool_name, None)
     assert not hasattr(parser, "top_level_parser")
-    assert type(parser.parser) == cli_parser.ArgumentParser
+    assert isinstance(parser.parser, cli_parser.ArgumentParser)
     assert parser.subparsers.dest == consts.cli_tool_name
 
 
@@ -23,7 +23,7 @@ def test_CLIParser_initiation_sub_level():
     subparser = cli_parser.CLIParser(sub_command, parser.subparsers)
     assert hasattr(subparser, "top_level_parser")
     assert subparser.top_level_parser.dest == consts.cli_tool_name
-    assert type(subparser.parser) == cli_parser.ArgumentParser
+    assert isinstance(subparser.parser, cli_parser.ArgumentParser)
     assert subparser.subparsers.dest == sub_command
 
 
@@ -32,7 +32,7 @@ def test_CLIParser_create_parser():
     # If CLIParser is initiated with the cli tool name, it has no top-level parser.
     cli_tool = cli_parser.CLIParser(consts.cli_tool_name, None)
     parser = cli_tool.create_parser()
-    assert type(parser) == cli_parser.ArgumentParser
+    assert isinstance(parser, cli_parser.ArgumentParser)
 
 
 def test_CLIParser_get_arg_from_model():
@@ -42,11 +42,11 @@ def test_CLIParser_get_arg_from_model():
     params_of_add_arg_command = cli_tool._get_arg_from_model(test_arg)
     names_in_command, rest_args_as_dict = params_of_add_arg_command
 
-    assert type(params_of_add_arg_command) == tuple
+    assert isinstance(params_of_add_arg_command, tuple)
     assert len(names_in_command) == 2
     assert names_in_command[0] == "-l"
 
-    assert type(rest_args_as_dict) == dict
+    assert isinstance(rest_args_as_dict, dict)
     # Check that "choices" is present in the parameters passed to add_argument command
     assert "choices" in rest_args_as_dict
     assert "default" not in rest_args_as_dict

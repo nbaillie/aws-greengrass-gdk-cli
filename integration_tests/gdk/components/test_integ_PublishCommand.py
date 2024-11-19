@@ -45,13 +45,6 @@ class ComponentPublishCommandIntegTest(TestCase):
 
         self.gg_client_stub.activate()
         self.sts_client_stub.activate()
-        self.gg_client_stub.add_response(
-            "list_component_versions",
-            {
-                "componentVersions": [],
-                "nextToken": "string",
-            },
-        )
         boto3_ses = Mock()
         boto3_ses.get_partition_for_region.return_value = "aws"
         self.mocker.patch("boto3.Session", return_value=boto3_ses)
@@ -112,6 +105,13 @@ class ComponentPublishCommandIntegTest(TestCase):
         self.tmpdir.joinpath("greengrass-build/artifacts/abc/NEXT_PATCH/somefile").touch()
         account_num = "123456789012"
         self.sts_client_stub.add_response("get_caller_identity", {"Account": account_num}, {})
+        self.gg_client_stub.add_response(
+            "list_component_versions",
+            {
+                "componentVersions": [],
+                "nextToken": "string",
+            },
+        )
         self.mocker.patch.object(self.s3_client, "get_bucket_location", return_value={"LocationConstraint": "us-east-2"})
         mock_upload_file = self.mocker.patch.object(self.s3_client, "upload_file", return_value=None)
 
@@ -276,6 +276,13 @@ class ComponentPublishCommandIntegTest(TestCase):
         self.tmpdir.joinpath("greengrass-build/artifacts/abc/NEXT_PATCH/somefile").touch()
         account_num = "123456789012"
         self.sts_client_stub.add_response("get_caller_identity", {"Account": account_num}, {})
+        self.gg_client_stub.add_response(
+            "list_component_versions",
+            {
+                "componentVersions": [],
+                "nextToken": "string",
+            },
+        )
         self.mocker.patch.object(self.s3_client, "get_bucket_location", return_value={"LocationConstraint": "us-west-2"})
         self.mocker.patch.object(self.s3_client, "upload_file", return_value=None)
 
@@ -305,6 +312,13 @@ class ComponentPublishCommandIntegTest(TestCase):
         self.tmpdir.joinpath("greengrass-build/artifacts/abc/NEXT_PATCH/somefile").touch()
         account_num = "123456789012"
         self.sts_client_stub.add_response("get_caller_identity", {"Account": account_num}, {})
+        self.gg_client_stub.add_response(
+            "list_component_versions",
+            {
+                "componentVersions": [],
+                "nextToken": "string",
+            },
+        )
         self.mocker.patch.object(self.s3_client, "get_bucket_location", return_value={"LocationConstraint": "us-west-2"})
         self.mocker.patch.object(self.s3_client, "upload_file", return_value=None)
 

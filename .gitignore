@@ -12,3 +12,4 @@
 *.vscode
 venv/
 coverage.xml
+.python-version

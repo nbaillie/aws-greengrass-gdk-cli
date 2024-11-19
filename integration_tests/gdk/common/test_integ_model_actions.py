@@ -28,7 +28,7 @@ def test_get_static_file_path_cli_model():
 def test_model_existence(mocker):
     # Integ test for validating the cli model type
     command_model = model_actions.get_validated_model()
-    assert type(command_model) == dict  # Command model obtained should always be a dictionary
+    assert isinstance(command_model, dict)  # Command model obtained should always be a dictionary
     assert len(command_model) > 0  # Command model is never empty
     assert consts.cli_tool_name in command_model  # Command model should contain the name of CLI as a key
 

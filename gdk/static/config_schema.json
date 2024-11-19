@@ -131,6 +131,14 @@
                                         "file_upload_args": {
                                             "type": "object",
                                             "description": "Extra arguments used by S3 client during file transfer."
+                                        },
+                                        "only_on_change": {
+                                            "description": "Only Publish a new version if the optionaly: GDK Config, Recipe, or Artifiacts have changed.",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": ["ARTIFACTS", "RECIPE"]
+                                            }
                                         }
                                     }
                                 }

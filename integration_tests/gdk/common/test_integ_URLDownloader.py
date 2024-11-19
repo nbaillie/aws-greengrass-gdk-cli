@@ -30,4 +30,4 @@ class URLDownloaderIntegTest(TestCase):
         with pytest.raises(Exception) as e:
             URLDownloader(download_link).download(self.tmpdir.joinpath("HelloWorld-python.zip"))
         assert not self.tmpdir.joinpath("HelloWorld-python.zip").exists()
-        assert type(e.value) == requests.exceptions.HTTPError
+        assert isinstance(e.value, requests.exceptions.HTTPError)
