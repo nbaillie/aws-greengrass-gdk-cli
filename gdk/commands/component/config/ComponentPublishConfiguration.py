@@ -33,12 +33,10 @@ class ComponentPublishConfiguration(GDKProject):
         else:
             _region = self._publish_config.get("region", "")
 
-        return self._validated_region(_region)
-
-    def _validated_region(self, region):
-        if region == "":
+        if not _region:
             raise ValueError("Region cannot be empty. Please provide a valid region.")
-        return region
+
+        return _region
 
     def _check_for_latest_published_component_version(self, region):
         component_arn = self._get_component_arn(region)
