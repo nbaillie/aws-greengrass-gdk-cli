@@ -146,7 +146,7 @@ class ConfigChecker:
         for item in _only_on_change:
             if not isinstance(item, str):
                 return False
-            elif item not in ["ARTIFACTS", "GDK_CONFIG", "RECIPE"]:
+            elif item not in ["ARTIFACTS", "RECIPE"]:
                 return False
 
         return True
