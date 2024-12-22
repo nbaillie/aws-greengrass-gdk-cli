@@ -142,7 +142,6 @@ class ComponentPublishConfiguration(GDKProject):
                 )
 
                 return fallback_version
-            logging.debug("Found latest version '%s' of the component '%s' in account.", c_latest_published_version, c_name)
 
             next_version = utils.get_next_patch_version(c_latest_published_version)
             logging.info("Using '%s' as the next version of the component '%s' to create.", next_version, c_name)
