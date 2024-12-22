@@ -133,7 +133,7 @@
                                             "description": "Extra arguments used by S3 client during file transfer."
                                         },
                                         "only_on_change": {
-                                            "description": "Only Publish a new version if the optionaly: GDK Config, Recipe, or Artifiacts have changed.",
+                                            "description": "Only Publish a new version if the optionally: GDK Config, Recipe, or Artifiacts have changed.",
                                             "type": "array",
                                             "items": {
                                                 "type": "string",
