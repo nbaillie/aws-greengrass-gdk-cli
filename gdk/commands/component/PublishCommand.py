@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 import yaml
 import json
-import deepdiff
+from gdk.common import diff_utils
 from gdk.commands.component.transformer.PublishRecipeTransformer import PublishRecipeTransformer
 
 import gdk.commands.component.component as component
@@ -85,30 +85,31 @@ class PublishCommand(Command):
 
     def _check_recipe_structure(self, recipe, latest_published_recipe):
         """Check for structural changes in the recipe."""
-        diff = deepdiff.DeepDiff(
-            recipe,
+        diff = diff_utils.deep_diff(
             latest_published_recipe,
-            ignore_type_subclasses=True,
-            exclude_paths=["root['ComponentVersion']"],
+            recipe,
+            exclude_paths=[
+                "root['Lifecycle']",
+                "root['ComponentVersion']",
+                "root['ComponentType']"
+            ],
             exclude_regex_paths=[
-                "^root\['Manifests'\]\[\d\]\['Artifacts'\]\[\d\]",  # noqa: W605
-                "^root\['Manifests'\]\[\d\]\['Artifacts'\]"         # noqa: W605
+                "^root\['Manifests'\]\[.+\]\['Artifacts'\]\[.+\]",  # noqa: W605
+                "^root\['Manifests'\]\[.+\]\['Artifacts'\]"         # noqa: W605
             ]
         )
 
-        logging.debug(f"Recipe diff: {diff}")
+        logging.info(f"Recipe diff: {json.dumps(diff, indent=4)}")
 
-        if "dictionary_item_added" in diff.keys():
-            for item in diff["dictionary_item_added"]:
-                if item not in ["root['ComponentType']", "root['Lifecycle']"]:
-                    logging.info(f"Changes found: dictionary_item_added: {item}")
-                    return True
+        if "dictionary_item_added" in diff.keys() and len(diff['dictionary_item_removed']) > 0:
+            logging.info(f"Changes found: dictionary_item_added: {item}")
+            return True
 
-        if "dictionary_item_removed" in diff.keys():
+        if "dictionary_item_removed" in diff.keys() and len(diff['dictionary_item_removed']) > 0:
             logging.info("Changes found: dictionary_item_removed")
             return True
 
-        if "values_changed" in diff.keys():
+        if "values_changed" in diff.keys() and len(diff['values_changed'].keys()) > 0:
             logging.info(f"Changes found: values_changed: {json.dumps(diff['values_changed'], indent=2)}")
             return True
 
